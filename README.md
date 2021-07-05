@@ -35,7 +35,7 @@ Install following apps on your server:
 1. Clone the repository
 
     ```bash
-    git clone <https://github.com/rghale/webrtc-screen-share.git>
+    git clone https://github.com/rghale/webrtc-screen-share.git
     ```
 
 2. Install Node modules
