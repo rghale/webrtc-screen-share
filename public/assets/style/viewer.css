@@ -1,0 +1,195 @@
+body {
+  font-size: 14px;
+  font-family: system-ui;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100%;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.dsh-status {
+  background-color: #e04b4b;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 0.5rem;
+  -webkit-box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+          box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+  -webkit-transition: background-color .2s;
+  transition: background-color .2s;
+  width: calc(80% - 2rem);
+  display: none;
+}
+
+.dsh-status.dsh-online {
+  background-color: #de8e31;
+}
+
+.dsh-status.dsh-active {
+  background-color: #5ebb5b;
+}
+
+.dsh-status > span {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.dsh-status > span:last-child {
+  margin-right: 0;
+}
+
+.dsh-status > span label:after {
+  content: ':';
+}
+
+.dsh-status > span span {
+  color: #f1f1f1;
+  padding-left: .5rem;
+  display: inline-block;
+}
+
+.dsh-status > span span.dsh-has-data {
+  color: #10f910;
+}
+
+.dsh-player {
+  background-color: rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+          box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+  height: 80%;
+  width: 80%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: none;
+  position: relative;
+}
+
+.dsh-player .dsh-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.dsh-player .dsh-loader img {
+  width: 5rme;
+  height: 5rem;
+}
+
+.dsh-player video {
+  height: 100%;
+  width: 100%;
+}
+
+.dsh-join {
+  background-color: rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+          box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+  height: Min(80%, 300px);
+  width: Min(80%, 500px);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.dsh-join div {
+  -webkit-box-flex: 1;
+      -ms-flex: auto;
+          flex: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #fff;
+  font-size: 2rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.dsh-join button {
+  background-color: #3f77ea;
+  color: white;
+  border-radius: 0.3rem;
+  border: 0;
+  padding: 1rem;
+  border-radius: 0.4rem;
+  -webkit-transition: all .2s;
+  transition: all .2s;
+  display: inline-block;
+  margin: 0 auto 2rem;
+  min-width: 30%;
+  font-size: 120%;
+}
+
+.dsh-join button:hover {
+  background-color: #325caf;
+}
+
+.dsh-join button:disabled, .dsh-join button[disabled] {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.dsh-join button:disabled:hover, .dsh-join button[disabled]:hover {
+  background-color: #3f77ea;
+}
+
+.dsh-disconnected {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(125, 125, 125, 0.5);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #fff;
+  -webkit-backdrop-filter: blur(3px);
+          backdrop-filter: blur(3px);
+  font-size: 200%;
+  font-weight: bold;
+}
+/*# sourceMappingURL=viewer.css.map */

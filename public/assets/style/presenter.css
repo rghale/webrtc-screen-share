@@ -1,0 +1,120 @@
+body {
+  font-size: 14px;
+  font-family: system-ui;
+  padding: 0;
+  margin: 0;
+}
+
+.dsh-status {
+  background-color: #de8e31;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 0.5rem;
+  -webkit-box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+          box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+  -webkit-transition: background-color .2s;
+  transition: background-color .2s;
+}
+
+.dsh-status.dsh-active {
+  background-color: #5ebb5b;
+}
+
+.dsh-status > span {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.dsh-status > span:last-child {
+  margin-right: 0;
+}
+
+.dsh-status > span label:after {
+  content: ':';
+}
+
+.dsh-status > span span {
+  color: #f1f1f1;
+  padding-left: .5rem;
+  display: inline-block;
+}
+
+.dsh-status > span span.dsh-has-data {
+  color: #10f910;
+}
+
+.dsh-toolbar {
+  margin: 1rem;
+  background-color: rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+          box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.18);
+  border-radius: 0.5rem;
+  padding: .5rem;
+  position: relative;
+  color: #fff;
+}
+
+.dsh-toolbar > span {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.dsh-toolbar > span:last-child {
+  margin-right: 0;
+}
+
+.dsh-toolbar > span label:after {
+  content: ':';
+}
+
+.dsh-toolbar > span span {
+  color: #f1f1f1;
+  padding-left: .5rem;
+  display: inline-block;
+}
+
+.dsh-toolbar button {
+  background-color: #3f77ea;
+  color: white;
+  border-radius: 0.3rem;
+  border: 0;
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  -webkit-transition: all .2s;
+  transition: all .2s;
+}
+
+.dsh-toolbar button:hover {
+  background-color: #325caf;
+}
+
+.dsh-toolbar select {
+  padding: .4rem;
+  border-radius: .4rem;
+  border: 0;
+}
+
+.dsh-disconnected,
+.dsh-invalid-presenter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(125, 125, 125, 0.5);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #fff;
+  -webkit-backdrop-filter: blur(3px);
+          backdrop-filter: blur(3px);
+  font-size: 200%;
+  font-weight: bold;
+}
+/*# sourceMappingURL=presenter.css.map */

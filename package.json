@@ -1,0 +1,30 @@
+{
+  "name": "webrtc-screen-share",
+  "version": "1.0.0",
+  "description": "WebRTC based screen sharing",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rghale/webrtc-screen-share.git"
+  },
+  "keywords": [
+    "WebRTC",
+    "Shreen",
+    "Sharing",
+    "Kurento"
+  ],
+  "author": "Reza Ghale",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rghale/webrtc-screen-share/issues"
+  },
+  "homepage": "https://github.com/rghale/webrtc-screen-share#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "kurento-client": "^6.16.0",
+    "socket.io": "^4.1.2"
+  }
+}

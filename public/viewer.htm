@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Viewer</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='assets/style/viewer.css'>
+
+    <script src="./assets/bower_components/webrtc-adapter/release/adapter.js"></script>
+    <script src="./assets/bower_components/kurento-client/js/kurento-client.js"></script>
+    <script src="./assets/bower_components/kurento-utils/js/kurento-utils.js"></script>
+</head>
+
+<body>
+    <div id="divJoin" class="dsh-join">
+        <div>Presenter is not available</div>
+        <button disabled>Join</button>
+    </div>
+    <div id="divStatus" class="dsh-status">
+        <span>
+            <label>Viewer ID</label>
+            <span id="lblViewerId">waiting</span>
+        </span>
+        <span>
+            <label>Presenter status</label>
+            <span id="lblPresenterStatus">waiting</span>
+        </span>
+        <span>
+            <label>Sharing status</label>
+            <span id="lblSharingStatus">waiting</span>
+        </span>
+        <span>
+            <label>Sender ID</label>
+            <span id="lblSenderId">waiting</span>
+        </span>
+    </div>
+    <div id="divPlayer" class="dsh-player">
+        <div id="divLoader" class="dsh-loader"><img src="./assets/image/loading.gif" /></div>
+        <video id="plrVideo" autoplay playsinline></video>
+    </div>
+    <script type="module">
+        import viewer from './assets/js/viewer.js';
+        var events = { 'start': null, 'stop': null };
+        var viewerObj = new viewer({
+            player: document.getElementById('plrVideo'),
+            iceServers: [
+                { urls: "stun:stun.l.google.com:19302" },
+            ]
+        });
+        if (viewerObj.autoPlay) {
+            document.getElementById("divJoin").style.display = "none";
+        }
+        else {
+            document.getElementById("divJoin").style.display = "flex";
+        }
+        viewerObj.onStatusChanged = function () {
+            if (this.autoPlay) {
+                if (this.presenterStatus == "online") {
+                    if (this.isSharing) {
+                        if (this.isWaitingViewer) {
+                            window.setTimeout(() => {
+                                document.getElementById("divStatus").style.display = 'block';
+                                document.getElementById("divPlayer").style.display = 'block';
+                                viewerObj.registerViewer();
+                            }, 100);
+                        }
+                    }
+                    else {
+                    }
+                }
+                else {
+                }
+            }
+            if (this.isConnected) {
+                document.getElementById("divConnectionStatus") && document.getElementById("divConnectionStatus").remove();
+            }
+            else {
+                let divConnectionStatus = document.createElement("div");
+                divConnectionStatus.id = "divConnectionStatus";
+                divConnectionStatus.className = "dsh-disconnected";
+                divConnectionStatus.innerText = "Connection to server is lost";
+                document.body.append(divConnectionStatus);
+            }
+            document.getElementById("lblViewerId").innerText = this.socket.id;
+            document.getElementById("lblSenderId").innerText = this.streamMechanism == 'streamserver' ? 'Stream Server' : (this.socket.senderId ? this.socket.senderId : '-');
+            if (this.presenterStatus == 'online') {
+                if (this.isWaitingViewer) {
+                    if (!this.autoPlay) {
+                        document.getElementById("divJoin").style.display = 'flex';
+                    }
+                    document.getElementById("divLoader").style.display = 'flex';
+                    document.getElementById("divStatus").style.display = 'none';
+                    document.getElementById("divPlayer").style.display = 'none';
+                }
+                document.getElementById("lblPresenterStatus").innerText = 'online';
+                document.getElementById("divStatus").classList.add('dsh-online');
+                if (this.isSharing) {
+                    if (this.isWaitingViewer) {
+                        document.getElementById("divJoin").getElementsByTagName("div")[0].innerHTML = "Sharing is available, please join";
+                        document.getElementById("divJoin").getElementsByTagName("button")[0].disabled = false;
+
+                        if (typeof (events.start) == "function") {
+                            events.start();
+                        }
+                    }
+                    document.getElementById("lblSharingStatus").innerText = 'shared';
+                    document.getElementById("divStatus").classList.add('dsh-active');
+                }
+                else {
+                    if (this.isWaitingViewer) {
+                        document.getElementById("divJoin").getElementsByTagName("div")[0].innerHTML = "Presenter is available but is not sharing anything";
+                        document.getElementById("divJoin").getElementsByTagName("button")[0].disabled = true;
+                    }
+                    document.getElementById("lblSharingStatus").innerText = 'not shared';
+                    document.getElementById("divStatus").classList.remove('dsh-active');
+                    if (typeof (events.stop) == "function") {
+                        events.stop();
+                    }
+                }
+            }
+            else {
+                if (!this.autoPlay) {
+                    document.getElementById("divJoin").style.display = 'flex';
+                }
+                document.getElementById("divLoader").style.display = 'flex';
+                document.getElementById("divStatus").style.display = 'none';
+                document.getElementById("divPlayer").style.display = 'none';
+                document.getElementById("divJoin").getElementsByTagName("div")[0].innerHTML = "Presenter is not available";
+                document.getElementById("divJoin").getElementsByTagName("button")[0].disabled = true;
+
+
+                document.getElementById("lblSharingStatus").innerText = 'not shared';
+                document.getElementById("lblPresenterStatus").innerText = 'offline';
+                document.getElementById("divStatus").classList.remove('dsh-active');
+                document.getElementById("divStatus").classList.remove('dsh-online');
+
+                if (typeof (events.stop) == "function") {
+                    events.stop();
+                }
+            }
+        };
+
+        document.getElementById("divJoin").getElementsByTagName("button")[0].addEventListener("click", async (e) => {
+            if (viewerObj.isSharing) {
+                document.getElementById("divJoin").style.display = 'none';
+                document.getElementById("divStatus").style.display = 'block';
+                document.getElementById("divPlayer").style.display = 'block';
+                viewerObj.registerViewer();
+            }
+        });
+
+        document.getElementById('plrVideo').addEventListener('play', () => {
+            document.getElementById('divLoader').style.display = 'none';
+        });
+
+        window.registerSharedStatus = (startEvent, stopEvent) => {
+            events.start = startEvent;
+            events.stop = stopEvent;
+        }
+
+        window.displaySharing = (options) => {
+            if (viewerObj.isSharing) {
+                viewerObj.registerViewer(options);
+            }
+        }
+    </script>
+</body>
+
+</html>

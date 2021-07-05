@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Presenter</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='assets/style/presenter.css'>
+
+    <script src="./assets/bower_components/webrtc-adapter/release/adapter.js"></script>
+    <script src="./assets/bower_components/kurento-client/js/kurento-client.js"></script>
+    <script src="./assets/bower_components/kurento-utils/js/kurento-utils.js"></script>
+</head>
+
+<body>
+    <div id="divStatus" class="dsh-status">
+        <span>
+            <label>Presenter ID</label>
+            <span id="lblPresenterId">waiting</span>
+        </span>
+        <span>
+            <label>Online viewers</label>
+            <span id="lblOnlineViewers">waiting</span>
+        </span>
+        <span>
+            <label>Sharing status</label>
+            <span id="lblSharingStatus">waiting</span>
+        </span>
+    </div>
+    <div id="divToolbar" class="dsh-toolbar">
+        <span>
+            <label>Mechanism</label>
+            <span>
+                <select id="cmbMechanism">
+                    <option value="peer">Peer-2-Peer</option>
+                    <option value="distributed">Distributed boradcast</option>
+                    <option value="streamserver">Streaming server</option>
+                </select>
+            </span>
+        </span>
+        <span>
+            <label>Max frame rate</label>
+            <span>
+                <select id="cmbMaxFrameRate">
+                    <option value="5" selected>5 fps</option>
+                    <option value="10">10 fps</option>
+                    <option value="15">15 fps</option>
+                    <option value="20">20 fps</option>
+                    <option value="25">25 fps</option>
+                    <option value="30">30 fps</option>
+                </select>
+            </span>
+        </span>
+        <span>
+            <label>Max screen size</label>
+            <span>
+                <select id="cmbScreenSize">
+                    <option value="640*360">nHD 640 x 360</option>
+                    <option value="800*600">SVGA 800 x 600</option>
+                    <option value="1024*768">XGA 1024 x 768</option>
+                    <option value="1360*768" selected>HD 1360 x 768</option>
+                    <option value="1600*900">HD+ 1600 x 900</option>
+                    <option value="1920*1080">FHD 1920 x 1080</option>
+                    <option value="2560*1440">QHD 2560 x 1440</option>
+                    <option value="3840*2160">4K UHD 3840 x 2160</option>
+                </select>
+            </span>
+        </span>
+        <span>
+            <label>Microphone</label>
+            <span>
+                <select id="cmbMicrophone">
+                    <option value="muted" selected>Muted</option>
+                    <option value="unmuted">Unmuted</option>
+                </select>
+            </span>
+        </span>
+        <button id="bthSharing" value="stop">Start Sharing</button>
+    </div>
+    <script type="module">
+        import presenter from './assets/js/presenter.js';
+        var presenterObj = new presenter({
+            iceServers: [
+                { urls: "stun:stun.l.google.com:19302" },
+            ],
+            mechanism: document.getElementById("cmbMechanism").value
+        });
+
+        presenterObj.onStatusChanged = function () {
+            if (!this.validPresenter) {
+                let divInvalidPresenter = document.createElement("div");
+                divInvalidPresenter.id = "divInvalidPresenter";
+                divInvalidPresenter.className = "dsh-invalid-presenter";
+                divInvalidPresenter.innerText = "Another presenter in running.";
+                document.body.append(divInvalidPresenter);
+
+            }
+            if (this.isConnected) {
+                document.getElementById("divConnectionStatus") && document.getElementById("divConnectionStatus").remove();
+            }
+            else {
+                let divConnectionStatus = document.createElement("div");
+                divConnectionStatus.id = "divConnectionStatus";
+                divConnectionStatus.className = "dsh-disconnected";
+                divConnectionStatus.innerText = "Connection to server is lost";
+                document.body.append(divConnectionStatus);
+            }
+            document.getElementById('lblPresenterId').innerText = this.socket ? this.socket.id : '-';
+            document.getElementById('lblOnlineViewers').innerText = Object.keys(this.viewers).length;
+            document.getElementById('lblSharingStatus').innerText = this.sharingStream.display ? 'shared' : 'not shared';
+            if (this.sharingStream.display) {
+                document.getElementById('divStatus').classList.add('dsh-active');
+                document.getElementById('cmbMechanism').disabled = true;
+                document.getElementById('cmbMaxFrameRate').disabled = true;
+                document.getElementById('cmbScreenSize').disabled = true;
+            }
+            else {
+                document.getElementById('divStatus').classList.remove('dsh-active');
+                document.getElementById('cmbMechanism').disabled = false;
+                document.getElementById('cmbMaxFrameRate').disabled = false;
+                document.getElementById('cmbScreenSize').disabled = false;
+            }
+        };
+
+        document.getElementById('cmbMechanism').addEventListener("change", async (e) => {
+            presenterObj.setMechanism(e.target.value);
+        });
+
+        document.getElementById('bthSharing').addEventListener("click", async (e) => {
+            let btn = e.target;
+            if (btn.value == "stop") {
+                btn.innerText = "Initializing"
+                btn.disabled = true;
+                btn.value = "initializing";
+                presenterObj.startSharing({
+                    mechanism: document.getElementById("cmbMechanism").value,
+                    maxFrameRate: document.getElementById("cmbMaxFrameRate").value,
+                    screenSize: document.getElementById("cmbScreenSize").value,
+                    microphone: document.getElementById("cmbMicrophone").value
+                },
+                    () => {
+                        btn.innerText = "Stop Sharing";
+                        btn.value = "start";
+                        btn.disabled = false;
+                        presenterObj.onStatusChanged();
+                    },
+                    () => {
+                        btn.innerText = "Start Sharing";
+                        btn.value = "stop";
+                        btn.disabled = false;
+                        presenterObj.onStatusChanged();
+                    },
+                    () => {
+                        btn.innerText = "Start Sharing";
+                        btn.value = "stop";
+                        btn.disabled = false;
+                        presenterObj.onStatusChanged();
+                    }
+                );
+            }
+            else if (btn.value == "start") {
+                presenterObj.stopSharing(() => {
+                    btn.innerText = "Start Sharing";
+                    btn.value = "stop";
+                    btn.disabled = false;
+                    presenterObj.onStatusChanged();
+                });
+            }
+        });
+
+        document.getElementById('cmbMicrophone').addEventListener('change', (e) => {
+            presenterObj.setOptions({
+                microphone: e.target.value
+            });
+        });
+
+        window.startPresent = (options, startEvent, stopEvent, failedEvent) => {
+            presenterObj.startSharing(options, startEvent, stopEvent, failedEvent);
+        }
+
+        window.stopPresent = (stopEvent) => {
+            presenterObj.stopSharing(stopEvent);
+        }
+    </script>
+</body>
